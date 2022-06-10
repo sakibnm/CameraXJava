@@ -44,6 +44,9 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor = null;
     private ProcessCameraProvider cameraProvider = null;
+    private int lenseFacing;
+    private int lenseFacingBack;
+    private int lenseFacingFront;
 
     private DisplayTakenPhoto mListener;
 
@@ -66,7 +69,8 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        lenseFacingBack = CameraSelector.LENS_FACING_BACK;
+        lenseFacingFront = CameraSelector.LENS_FACING_FRONT;
     }
 
     @Override
@@ -83,6 +87,9 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         buttonTakePhoto.setOnClickListener(this);
         buttonSwitchCamera.setOnClickListener(this);
         buttonOpenGallery.setOnClickListener(this);
+
+//        default lense facing....
+        lenseFacing = lenseFacingBack;
 
         setUpCamera();
         cameraExecutor = Executors.newSingleThreadExecutor();
@@ -109,9 +116,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
                         .build();
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle((LifecycleOwner) getContext(),cameraSelector, preview, imageCapture);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         },ContextCompat.getMainExecutor(getContext()));
@@ -160,6 +165,15 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
                 break;
             case R.id.buttonOpenGallery:
                 mListener.onOpenGalleryPressed();
+                break;
+            case R.id.buttonSwitchCamera:
+                if(lenseFacing==lenseFacingBack){
+                    lenseFacing = lenseFacingFront;
+                    setUpCamera();
+                }else{
+                    lenseFacing = lenseFacingBack;
+                    setUpCamera();
+                }
                 break;
         }
     }
