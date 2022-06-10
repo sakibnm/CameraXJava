@@ -1,47 +1,41 @@
 package space.sakibnm.cameraxdemo;
 
-import android.Manifest;
 import android.content.ContentValues;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
-import androidx.camera.view.video.OutputFileOptions;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmenrCameraController#newInstance} factory method to
+ * Use the {@link FragmentCameraController#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmenrCameraController extends Fragment implements View.OnClickListener {
+public class FragmentCameraController extends Fragment implements View.OnClickListener {
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private PreviewView previewView;
@@ -51,15 +45,19 @@ public class FragmenrCameraController extends Fragment implements View.OnClickLi
     private ExecutorService cameraExecutor = null;
     private ProcessCameraProvider cameraProvider = null;
 
-    private Button buttonTakePhoto;
-    private Button buttonCancel;
+    private DisplayTakenPhoto mListener;
 
-    public FragmenrCameraController() {
+    private FloatingActionButton buttonTakePhoto;
+    private FloatingActionButton buttonSwitchCamera;
+    private FloatingActionButton buttonOpenGallery;
+
+
+    public FragmentCameraController() {
         // Required empty public constructor
     }
 
-    public static FragmenrCameraController newInstance() {
-        FragmenrCameraController fragment = new FragmenrCameraController();
+    public static FragmentCameraController newInstance() {
+        FragmentCameraController fragment = new FragmentCameraController();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -79,10 +77,13 @@ public class FragmenrCameraController extends Fragment implements View.OnClickLi
         previewView = rootView.findViewById(R.id.previewView);
 
         buttonTakePhoto = rootView.findViewById(R.id.buttonTakePhoto);
-        buttonCancel = rootView.findViewById(R.id.buttonCancel);
+        buttonSwitchCamera = rootView.findViewById(R.id.buttonSwitchCamera);
+        buttonOpenGallery = rootView.findViewById(R.id.buttonOpenGallery);
 
         buttonTakePhoto.setOnClickListener(this);
-        buttonCancel.setOnClickListener(this);
+        buttonSwitchCamera.setOnClickListener(this);
+        buttonOpenGallery.setOnClickListener(this);
+
         setUpCamera();
         cameraExecutor = Executors.newSingleThreadExecutor();
 
@@ -140,12 +141,13 @@ public class FragmenrCameraController extends Fragment implements View.OnClickLi
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        Log.d("demo", "onImageSaved: "+ outputFileResults.getSavedUri());
+//                        Log.d("demo", "onImageSaved: "+ outputFileResults.getSavedUri());
+                        mListener.onTakePhoto(outputFileResults.getSavedUri());
                     }
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
-                        Log.d("demo", "onError: "+exception.toString());
+                        Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -156,13 +158,26 @@ public class FragmenrCameraController extends Fragment implements View.OnClickLi
             case R.id.buttonTakePhoto:
                 takePhoto();
                 break;
-
-            case R.id.buttonCancel:
+            case R.id.buttonOpenGallery:
+                mListener.onOpenGalleryPressed();
                 break;
         }
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof DisplayTakenPhoto){
+            mListener = (DisplayTakenPhoto) context;
+        }else{
+            throw new RuntimeException(context+" must implement DisplayTakenPhoto");
+        }
+    }
 
+    public interface DisplayTakenPhoto{
+        void onTakePhoto(Uri imageUri);
+        void onOpenGalleryPressed();
+    }
 
 
 }
