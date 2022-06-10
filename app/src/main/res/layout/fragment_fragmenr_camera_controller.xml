@@ -5,14 +5,13 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmenrCameraController">
+    tools:context=".FragmentCameraController">
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonTakePhoto"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,25 +22,53 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonSwitchCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/flip_camera"
+        android:focusable="true"
+        app:backgroundTint="#BFFFFFFF"
+        app:fabCustomSize="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="48dp"
+        app:srcCompat="@drawable/switch_camera" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonOpenGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/open_gallery"
+        android:focusable="true"
+        android:visibility="visible"
+        app:backgroundTint="#BFFFFFFF"
+        app:fabCustomSize="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:maxImageSize="48dp"
+        app:srcCompat="@drawable/gallery" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonTakePhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#495E02"
-        android:text="Take Photo"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:contentDescription="@string/take_photo"
+        android:focusable="true"
+        app:backgroundTint="#FFFFFF"
+        app:fabCustomSize="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="#FF3D00"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonTakePhoto"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:maxImageSize="56dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

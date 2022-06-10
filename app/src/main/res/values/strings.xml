@@ -2,4 +2,7 @@
     <string name="app_name">CameraXDemo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="flip_camera">Switch Camera</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="take_photo">Take Photo</string>
 </resources>
