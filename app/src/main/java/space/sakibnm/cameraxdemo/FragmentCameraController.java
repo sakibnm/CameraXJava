@@ -42,7 +42,6 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
     private CameraSelector cameraSelector;
     private Preview preview;
     private ImageCapture imageCapture;
-    private ExecutorService cameraExecutor = null;
     private ProcessCameraProvider cameraProvider = null;
     private int lenseFacing;
     private int lenseFacingBack;
@@ -92,7 +91,6 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         lenseFacing = lenseFacingBack;
 
         setUpCamera();
-        cameraExecutor = Executors.newSingleThreadExecutor();
 
         return rootView;
     }
