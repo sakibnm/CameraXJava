@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 
@@ -29,7 +30,9 @@ public class FragmentDisplayImage extends Fragment {
     private Uri imageUri;
     private ImageView imageViewPhoto;
     private Button buttonRetake;
+    private Button buttonUpload;
     private RetakePhoto mListener;
+    private ProgressBar progressBar;
 
     public FragmentDisplayImage() {
         // Required empty public constructor
@@ -57,8 +60,13 @@ public class FragmentDisplayImage extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_display_image, container, false);
+//        ProgressBar setup init.....
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
+
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
         buttonRetake = view.findViewById(R.id.buttonRetake);
+        buttonUpload = view.findViewById(R.id.buttonUpload);
         Glide.with(view)
                 .load(imageUri)
                 .centerCrop()
@@ -68,6 +76,13 @@ public class FragmentDisplayImage extends Fragment {
             @Override
             public void onClick(View view) {
                 mListener.onRetakePressed();
+            }
+        });
+        
+        buttonUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onUploadButtonPressed(imageUri);
             }
         });
         return view;
@@ -85,5 +100,7 @@ public class FragmentDisplayImage extends Fragment {
 
     public interface RetakePhoto{
         void onRetakePressed();
+
+        void onUploadButtonPressed(Uri imageUri);
     }
 }

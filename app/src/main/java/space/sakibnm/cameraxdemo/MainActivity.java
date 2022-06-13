@@ -13,15 +13,26 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 public class MainActivity extends AppCompatActivity implements FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.RetakePhoto {
 
     private static final int PERMISSIONS_CODE = 0x100;
     private FrameLayout containerRoot;
+    private FirebaseStorage storage;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +41,10 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
 
         containerRoot = findViewById(R.id.containerRoot);
 
+//        getting the instance of FirebaseStorage....
+        storage = FirebaseStorage.getInstance();
 
+        progressBar = findViewById(R.id.progressBar);
 
 //        Asking for permissions in runtime......
         Boolean cameraAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -102,6 +116,36 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerRoot, FragmentCameraController.newInstance(), "cameraFragment")
                 .commit();
+    }
+
+    @Override
+    public void onUploadButtonPressed(Uri imageUri) {
+//        ProgressBar.......
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setProgress(0);
+//        Upload an image from local file....
+        StorageReference storageReference = storage.getReference().child("images");
+        UploadTask uploadImage = storageReference.putFile(imageUri);
+        uploadImage.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show();
+            }
+        })
+        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(MainActivity.this, "Upload successful! Check Firestore", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+            }
+        })
+        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressBar.setProgress((int) progress);
+            }
+        });
     }
 
 }
