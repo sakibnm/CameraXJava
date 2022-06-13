@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
     private static final int PERMISSIONS_CODE = 0x100;
     private FrameLayout containerRoot;
     private FirebaseStorage storage;
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
 
 //        getting the instance of FirebaseStorage....
         storage = FirebaseStorage.getInstance();
-
-        progressBar = findViewById(R.id.progressBar);
 
 //        Asking for permissions in runtime......
         Boolean cameraAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -119,12 +117,11 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
     }
 
     @Override
-    public void onUploadButtonPressed(Uri imageUri) {
+    public void onUploadButtonPressed(Uri imageUri, ProgressBar progressBar) {
 //        ProgressBar.......
         progressBar.setVisibility(View.VISIBLE);
-        progressBar.setProgress(0);
 //        Upload an image from local file....
-        StorageReference storageReference = storage.getReference().child("images");
+        StorageReference storageReference = storage.getReference().child("images/"+imageUri.getLastPathSegment());
         UploadTask uploadImage = storageReference.putFile(imageUri);
         uploadImage.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -143,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                Log.d("demo", "onProgress: "+progress);
                 progressBar.setProgress((int) progress);
             }
         });
