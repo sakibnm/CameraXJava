@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
 
         if(cameraAllowed && readAllowed && writeAllowed){
             Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerRoot, FragmentCameraController.newInstance(), "cameraFragment")
+                    .commit();
 
         }else{
             requestPermissions(new String[]{
