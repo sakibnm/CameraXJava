@@ -61,22 +61,6 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
         }
     }
 
-    ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode()==RESULT_OK){
-                        Intent data = result.getData();
-                        Uri selectedImageUri = data.getData();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.containerRoot,FragmentDisplayImage.newInstance(selectedImageUri),"displayFragment")
-                                .commit();
-                    }
-                }
-            }
-    );
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -95,6 +79,22 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
                 .replace(R.id.containerRoot,FragmentDisplayImage.newInstance(imageUri),"displayFragment")
                 .commit();
     }
+//Retrieving an image from gallery....
+    ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode()==RESULT_OK){
+                        Intent data = result.getData();
+                        Uri selectedImageUri = data.getData();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.containerRoot,FragmentDisplayImage.newInstance(selectedImageUri),"displayFragment")
+                                .commit();
+                    }
+                }
+            }
+    );
 
     @Override
     public void onOpenGalleryPressed() {
