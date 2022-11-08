@@ -27,8 +27,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,14 +88,14 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
 //        default lense facing....
         lenseFacing = lenseFacingBack;
 
-        setUpCamera();
+        setUpCamera(lenseFacing);
 
         return rootView;
     }
 
 
 
-    private void setUpCamera() {
+    private void setUpCamera(int lenseFacing) {
         //            binding hardware camera with preview, and imageCapture.......
         cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
         cameraProviderFuture.addListener(()->{
@@ -110,7 +108,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
             try {
                 cameraProvider = cameraProviderFuture.get();
                 cameraSelector = new CameraSelector.Builder()
-                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                        .requireLensFacing(lenseFacing)
                         .build();
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle((LifecycleOwner) getContext(),cameraSelector, preview, imageCapture);
@@ -167,10 +165,10 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
             case R.id.buttonSwitchCamera:
                 if(lenseFacing==lenseFacingBack){
                     lenseFacing = lenseFacingFront;
-                    setUpCamera();
+                    setUpCamera(lenseFacing);
                 }else{
                     lenseFacing = lenseFacingBack;
-                    setUpCamera();
+                    setUpCamera(lenseFacing);
                 }
                 break;
         }
