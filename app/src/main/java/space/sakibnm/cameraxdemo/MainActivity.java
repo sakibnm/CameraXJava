@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
                 progressBar.setVisibility(View.GONE);
             }
         })
+//                Setting progressbar.....
         .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
