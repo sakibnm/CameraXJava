@@ -74,7 +74,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_fragmenr_camera_controller, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_camera_controller, container, false);
         previewView = rootView.findViewById(R.id.previewView);
 
         buttonTakePhoto = rootView.findViewById(R.id.buttonTakePhoto);
