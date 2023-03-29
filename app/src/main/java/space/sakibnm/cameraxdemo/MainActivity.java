@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCameraCon
         }
     }
 
+//    After the user grants or denies the permission....
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
